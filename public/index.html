@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Datos Arduino</title>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 400px;
+      margin: 20px auto;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Temperatura y Humedad en Tiempo Real</h2>
+
+  <p>Temperatura: <span id="temp">--</span> °C</p>
+  <p>Humedad: <span id="hum">--</span> %</p>
+
+  <h3>Control del LED 13</h3>
+  <button onclick="led('on')">Encender LED</button>
+  <button onclick="led('off')">Apagar LED</button>
+
+<script>
+function actualizar() {
+  fetch("/data")
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById("temp").innerText = d.datos.temp;
+      document.getElementById("hum").innerText = d.datos.hum;
+    });
+}
+
+function led(state) {
+  fetch("/led", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ state })
+  });
+}
+
+setInterval(actualizar, 2000);
+</script>
+
+</body>
+</html>
